@@ -51,3 +51,27 @@ app.listen(3000, () => {
 
 Go to the http://localhost:3000/ping
 You should see 'pong' on the page
+
+## Setup Database Connection
+```bash
+npx sequelize-cli init
+```
+
+Go to mysql and create a database
+
+```sql
+CREATE DATABASE gymstuff
+```
+
+At config/config.json, put your credentials and name of the database
+It should look like this
+
+```json
+"development": {
+    "username": "root",
+    "password": null,
+    "database": "gymstuff",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+}
+```
