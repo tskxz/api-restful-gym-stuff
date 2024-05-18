@@ -27,7 +27,10 @@ Your package.json should look like this
 
 Install the following packages
 ```bash
-npm i express sequelize-cli sequelize sqlite3 bcrypt nodemon express-session
+npm i express sequelize-cli sequelize bcrypt nodemon express-session
+```
+```bash
+npm install mysql2 --save
 ```
 
 ### Create your first express application
@@ -69,9 +72,38 @@ It should look like this
 ```json
 "development": {
     "username": "root",
-    "password": null,
+    "password": "rot",
     "database": "gymstuff",
     "host": "127.0.0.1",
     "dialect": "mysql"
 }
+```
+
+## Creating the Machine Model (and Migratin)
+```bash
+npx sequelize-cli model:generate --name Machine --attributes name:string,description:string,status:string
+```
+
+You should see an similiar output
+```bash
+New model was created at api-restful-gym-stuff/models/machine.js .
+New migration was created at api-restful-gym-stuff/migrations/20240518181311-create-machine.js .
+```
+
+## Running Migrations
+```bash
+npx sequelize-cli db:migrate
+```
+
+If you go to mysql, you should see that the tables were created
+
+```bash
+MariaDB [gymstuff]> show tables;
++--------------------+
+| Tables_in_gymstuff |
++--------------------+
+| Machines           |
+| SequelizeMeta      |
++--------------------+
+2 rows in set (0.001 sec)
 ```
