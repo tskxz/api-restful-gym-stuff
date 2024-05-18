@@ -107,3 +107,72 @@ MariaDB [gymstuff]> show tables;
 +--------------------+
 2 rows in set (0.001 sec)
 ```
+
+## API Machine
+Create routes and controllers folder
+Create a new file at routes/machines.js
+
+Set a simple post method to create a machine
+
+```js
+var express = require('express');
+var router = express.Router();
+
+const machineController = require('../controllers/machine')
+
+router.post('/create', machineController.create);
+
+module.exports = router
+```
+
+Create a new file at controllers/machine.js
+This is a function that creates a machine from request body.
+
+```js
+const models = require('../models');
+const Machine = models.Machine
+
+const create = async(req, res) => {
+    const data = req.body;
+    const machine = await Machine.create(data);
+    res.json(machine);
+}
+
+module.exports = {
+    create
+}
+```
+
+Update your server.js to use json parser middleware and set up the machine routes
+
+```js
+const machinesRouter = require('./routes/machines')
+app.use(express.json())
+app.use('/machines', machinesRouter);
+```
+
+Your server.js should look like this
+```js
+const express = require('express')
+const machinesRouter = require('./routes/machines')
+
+const app = express()
+
+app.use(express.json())
+app.use('/machines', machinesRouter);
+
+app.get('/ping', (req, res) => {
+    res.send('pong')
+})
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000')
+})
+```
+
+You can test API with Postman
+So we try to insert a machine with some data with json
+![img](./api-create-machine.png)
+
+If we check at our database, you will see the row that we added
+![img](./mysql-machines-view01.png)
