@@ -176,3 +176,94 @@ So we try to insert a machine with some data with json
 
 If we check at our database, you will see the row that we added
 ![img](./mysql-machines-view01.png)
+
+Add the following function at controllers/machine.js to see all machines
+```js
+const view = async(req, res) => {
+    const machines = await Machine.findAll();
+    res.json(machines);
+}
+```
+
+controllers/machine.js
+```js
+const models = require('../models');
+const Machine = models.Machine
+
+const create = async(req, res) => {
+    const data = req.body;
+    const machine = await Machine.create(data);
+    res.json(machine);
+}
+
+const view = async(req, res) => {
+    const machines = await Machine.findAll();
+    res.json(machines);
+}
+
+module.exports = {
+    create,
+    view
+}
+```
+  
+We created another machine  
+![img](./api-create-machine2.png)
+
+If we test it at postman, you will see all machines
+![img](./api-view-machines.png)
+
+
+Add the following update function at controllers/machine.js
+```js
+const update = async(req, res) => {
+    const data = req.body;
+    await Machine.update({
+        name: data.name,
+        description: data.description,
+        status: data.status
+    }, {where: {id: req.params.id}})
+    const machine_updated = await Machine.findOne({where: {id: req.params.id}})
+    res.json(machine_updated);
+}
+```
+
+Dont forget to add the function at module.exports
+```js
+module.exports = {
+    create,
+    view,
+    update
+}
+```
+
+At routes/machines.js add the following line, :id its a parameter that needs to be included to be able to update a specific machine
+```js
+router.put('/update/:id', machineController.update);
+```
+
+We updated the status of the machine with id 2
+![img](./api-update-machine.png)
+
+Add the following function to delete a machine
+```js
+const deleteMachine = async(req, res) => {
+    await Machine.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.json({message: 'Machine deleted successfully'});
+}
+```
+
+Add this route
+```js
+router.delete('/delete/:id', machineController.deleteMachine)
+```
+We deleted the machine with id 1
+![img](./api-delete-machine.png)
+
+We can't see the machine with id 1
+![img](./api-view-machines-after-delete.png)  
+Now we have a full CRUD API for machines
