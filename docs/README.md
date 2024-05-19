@@ -176,3 +176,39 @@ So we try to insert a machine with some data with json
 
 If we check at our database, you will see the row that we added
 ![img](./mysql-machines-view01.png)
+
+Add the following function at controllers/machine.js to see all machines
+```js
+const view = async(req, res) => {
+    const machines = await Machine.findAll();
+    res.json(machines);
+}
+```
+
+controllers/machine.js
+```js
+const models = require('../models');
+const Machine = models.Machine
+
+const create = async(req, res) => {
+    const data = req.body;
+    const machine = await Machine.create(data);
+    res.json(machine);
+}
+
+const view = async(req, res) => {
+    const machines = await Machine.findAll();
+    res.json(machines);
+}
+
+module.exports = {
+    create,
+    view
+}
+```
+  
+We created another machine  
+![img](./api-create-machine2.png)
+
+If we test it at postman, you will see all machines
+![img](./api-view-machines.png)

@@ -7,6 +7,12 @@ const create = async(req, res) => {
     res.json(machine);
 }
 
+const view = async(req, res) => {
+    const machines = await Machine.findAll();
+    res.json(machines);
+}
+
 module.exports = {
-    create
+    create,
+    view
 }
