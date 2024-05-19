@@ -261,12 +261,12 @@ Add this route
 ```js
 router.delete('/delete/:id', machineController.deleteMachine)
 ```
-We deleted the machine with id 1
-![img](./api-delete-machine.png)
+We deleted the machine with id 1  
+![img](./api-delete-machine.png)  
 
-We can't see the machine with id 1
+We can't see the machine with id 1  
 ![img](./api-view-machines-after-delete.png)  
-Now we have a full CRUD API for machines
+Now we have a full CRUD API for machines  
 
 ## API Member
 Create model and migration
@@ -392,3 +392,27 @@ router.post('/checkcredentials', memberController.checkCredentials);
 ```
 ![img](./api-wrongpass.png)
 ![img](./api-checkcredentials.png)
+
+Update member
+
+```js
+const update = async(req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+    await Member.update(data, {where: {id: id}, individualHooks: true});
+    const member = await Member.findOne({where: {id: req.params.id}})
+    res.json(member)
+}
+```
+
+```js
+router.put('/update/:id', memberController.update);
+```
+We created a new member  
+![img](./api-create-member-update.png)  
+We updated member  
+![img](./api-update-member.png)  
+We checked the old credentials  
+![img](./api-update-test-checkcredentials.png)  
+And now we check the new updated credentials  
+![img](./api-check-updated.png)  
