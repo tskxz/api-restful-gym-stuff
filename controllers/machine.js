@@ -23,8 +23,18 @@ const update = async(req, res) => {
     res.json(machine_updated);
 }
 
+const deleteMachine = async(req, res) => {
+    await Machine.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.json({message: 'Machine deleted successfully'});
+}
+
 module.exports = {
     create,
     view,
-    update
+    update,
+    deleteMachine
 }

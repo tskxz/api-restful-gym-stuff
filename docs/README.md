@@ -244,3 +244,26 @@ router.put('/update/:id', machineController.update);
 
 We updated the status of the machine with id 2
 ![img](./api-update-machine.png)
+
+Add the following function to delete a machine
+```js
+const deleteMachine = async(req, res) => {
+    await Machine.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.json({message: 'Machine deleted successfully'});
+}
+```
+
+Add this route
+```js
+router.delete('/delete/:id', machineController.deleteMachine)
+```
+We deleted the machine with id 1
+![img](./api-delete-machine.png)
+
+We can't see the machine with id 1
+![img](./api-view-machines-after-delete.png)  
+Now we have a full CRUD API for machines
