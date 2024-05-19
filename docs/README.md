@@ -416,3 +416,21 @@ We checked the old credentials
 ![img](./api-update-test-checkcredentials.png)  
 And now we check the new updated credentials  
 ![img](./api-check-updated.png)  
+
+Delete member
+```js
+const deleteMachine = async(req, res) => {
+    await Machine.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.json({message: 'Machine deleted successfully'});
+}
+```
+
+```js
+router.delete('/delete/:id', memberController.deleteMember);
+```
+We deleted the member with id 1
+![img](./api-member-delete.png)

@@ -27,6 +27,11 @@ const update = async(req, res) => {
     res.json(member)
 }
 
+const deleteMember = async(req, res) => {
+    await Member.destroy({where: {id: req.params.id}})
+    res.json({message: 'Member deleted successsfully'})
+}
+
 const getUsers = async(req, res) => {
     const members = await Member.findAll()
     res.json(members)
@@ -36,5 +41,6 @@ module.exports = {
     create,
     checkCredentials,
     update,
-    getUsers
+    getUsers,
+    deleteMember
 }
