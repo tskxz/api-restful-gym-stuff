@@ -12,7 +12,19 @@ const view = async(req, res) => {
     res.json(machines);
 }
 
+const update = async(req, res) => {
+    const data = req.body;
+    await Machine.update({
+        name: data.name,
+        description: data.description,
+        status: data.status
+    }, {where: {id: req.params.id}})
+    const machine_updated = await Machine.findOne({where: {id: req.params.id}})
+    res.json(machine_updated);
+}
+
 module.exports = {
     create,
-    view
+    view,
+    update
 }

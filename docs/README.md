@@ -212,3 +212,35 @@ We created another machine
 
 If we test it at postman, you will see all machines
 ![img](./api-view-machines.png)
+
+
+Add the following update function at controllers/machine.js
+```js
+const update = async(req, res) => {
+    const data = req.body;
+    await Machine.update({
+        name: data.name,
+        description: data.description,
+        status: data.status
+    }, {where: {id: req.params.id}})
+    const machine_updated = await Machine.findOne({where: {id: req.params.id}})
+    res.json(machine_updated);
+}
+```
+
+Dont forget to add the function at module.exports
+```js
+module.exports = {
+    create,
+    view,
+    update
+}
+```
+
+At routes/machines.js add the following line, :id its a parameter that needs to be included to be able to update a specific machine
+```js
+router.put('/update/:id', machineController.update);
+```
+
+We updated the status of the machine with id 2
+![img](./api-update-machine.png)
