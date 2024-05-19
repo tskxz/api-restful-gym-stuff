@@ -261,9 +261,176 @@ Add this route
 ```js
 router.delete('/delete/:id', machineController.deleteMachine)
 ```
-We deleted the machine with id 1
-![img](./api-delete-machine.png)
+We deleted the machine with id 1  
+![img](./api-delete-machine.png)  
 
-We can't see the machine with id 1
+We can't see the machine with id 1  
 ![img](./api-view-machines-after-delete.png)  
-Now we have a full CRUD API for machines
+Now we have a full CRUD API for machines  
+
+## API Member
+Create model and migration
+```bash
+npx sequelize-cli model:generate --name Member --attributes username:string,first_name:string,last_name:string,phone_num:string,email:string,password:string
+```
+
+Implement hash password at models/member.js
+```js
+validPassword(password){
+      return bcrypt.compareSync(password, this.password)
+}
+```
+
+```js
+hooks: {
+      beforeCreate: (member) => {
+        const salt = bcrypt.genSaltSync();
+        member.password = bcrypt.hashSync(member.password, salt)
+      }
+},
+```
+Member model should look like this
+```js
+'use strict';
+const bcrypt = require('bcrypt')
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Member extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+
+    validPassword(password){
+      return bcrypt.compareSync(password, this.password)
+    }
+  }
+  Member.init({
+    username: DataTypes.STRING,
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    phone_num: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING
+  }, {
+    hooks: {
+      beforeCreate: (member) => {
+        const salt = bcrypt.genSaltSync();
+        member.password = bcrypt.hashSync(member.password, salt)
+      }
+    },
+    sequelize,
+    modelName: 'Member',
+  });
+  return Member;
+};
+```
+
+Run the migration
+```bash
+npx sequelize-cli db:migrate
+```
+
+Create a new file controllers/members.js
+```js
+const models = require('../models')
+const Member = models.Member
+
+const create = async(req, res) => {
+    const data = req.body;
+    const member = await Member.create(data);
+    res.json(member);
+}
+
+module.exports = {
+    create
+}
+```
+Create routes/members.js
+
+```js
+var express = require('express');
+var router = express.Router();
+
+const memberController = require('../controllers/member')
+router.post('/create', memberController.create);
+
+module.exports = router
+```
+
+Add this route at server.js
+```js
+app.use('/members', membersRouter);
+```
+![img](./api-create-member.png)
+
+Check credentials
+Add this following controller  
+```js
+const checkCredentials = async(req, res) => {
+    const data = req.body;
+    const member = await Member.findOne({where: {username: data.username}})
+    if(!member){
+        res.status(404).json({message: 'Member not found'})
+    } else if(!member.validPassword(data.password)){
+        res.status(401).json({message: 'Invalid password'})
+    } else {
+        res.json({member})
+    }
+}
+```
+
+Add this route
+```js
+router.post('/checkcredentials', memberController.checkCredentials);
+```
+![img](./api-wrongpass.png)
+![img](./api-checkcredentials.png)
+
+Update member
+
+```js
+const update = async(req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+    await Member.update(data, {where: {id: id}, individualHooks: true});
+    const member = await Member.findOne({where: {id: req.params.id}})
+    res.json(member)
+}
+```
+
+```js
+router.put('/update/:id', memberController.update);
+```
+We created a new member  
+![img](./api-create-member-update.png)  
+We updated member  
+![img](./api-update-member.png)  
+We checked the old credentials  
+![img](./api-update-test-checkcredentials.png)  
+And now we check the new updated credentials  
+![img](./api-check-updated.png)  
+
+Delete member
+```js
+const deleteMachine = async(req, res) => {
+    await Machine.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.json({message: 'Machine deleted successfully'});
+}
+```
+
+```js
+router.delete('/delete/:id', memberController.deleteMember);
+```
+We deleted the member with id 1
+![img](./api-member-delete.png)
