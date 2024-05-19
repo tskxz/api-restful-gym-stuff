@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate: (member) => {
         const salt = bcrypt.genSaltSync();
         member.password = bcrypt.hashSync(member.password, salt)
+      },
+      
+      beforeUpdate: (member) => {
+        const salt = bcrypt.genSaltSync();
+        member.password = bcrypt.hashSync(member.password, salt)
       }
     },
     sequelize,

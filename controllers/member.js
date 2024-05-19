@@ -19,7 +19,22 @@ const checkCredentials = async(req, res) => {
     }
 }
 
+const update = async(req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+    await Member.update(data, {where: {id: id}, individualHooks: true});
+    const member = await Member.findOne({where: {id: req.params.id}})
+    res.json(member)
+}
+
+const getUsers = async(req, res) => {
+    const members = await Member.findAll()
+    res.json(members)
+}
+
 module.exports = {
     create,
-    checkCredentials
+    checkCredentials,
+    update,
+    getUsers
 }
