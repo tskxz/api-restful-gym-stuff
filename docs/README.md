@@ -3,6 +3,12 @@ Basic API Restful with Express.js that manages members and machines from gym
 
 ## ER Model
 ![img](./api%20gym%20stuff.png)
+```
+Machine(name, description, status)
+Member(username, first_name, last_name, phone_num, email, password)
+Instructor(username, first_name, last_name, phone_num, email, password)
+hasInstructor(Member, Instructor)
+```
 
 ## Creating the project
 
