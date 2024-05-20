@@ -438,5 +438,84 @@ const deleteMachine = async(req, res) => {
 ```js
 router.delete('/delete/:id', memberController.deleteMember);
 ```
-We deleted the member with id 1
-![img](./api-member-delete.png)
+We deleted the member with id 1   
+![img](./api-member-delete.png)  
+
+Create model and migration
+```bash
+npx sequelize-cli model:generate --name MemberInstructor --attributes idMember:integer,idInstructor:integer
+```
+
+Import the models at our member instructor model
+```js
+const models = require('../models')
+const Member = models.Member
+const Instructor = models.Instructor
+```
+
+Add the following constraints at our model
+```js
+idMember: {type: DataTypes.INTEGER, references: {model: Member, key:'id'}},
+idInstructor: {type: DataTypes.INTEGER, references: {model: Instructor, key:'id'}}
+```
+And at migration
+```js
+idMember: {
+    type: Sequelize.INTEGER,
+    references: {model: 'Members', key: 'id'}
+},
+idInstructor: {
+    type: Sequelize.INTEGER,
+    references: {model: 'Instructors', key: 'id'}
+},
+```
+Create the migration
+```
+npx sequelize-cli db:migrate
+```
+Create the controller member_instructors.js
+```js
+const models = require('../models')
+const Member = models.Member
+const Instructor = models.Instructor
+const MemberInstructor = models.MemberInstructor
+
+const create = async(req, res) => {
+    const data = req.body
+    const memberinstructor = await MemberInstructor.create(data)
+    res.json(memberinstructor)
+}
+
+const getMemberInstructor = async(req, res) => {
+    const memberinstructor = await MemberInstructor.findAll()
+    res.json(memberinstructor)
+}
+module.exports = {create, getMemberInstructor}
+```
+
+Create routes members_instructors.js
+
+```js
+var express = require('express');
+var router = express.Router();
+
+const member_instructorsController = require('../controllers/member_instructors')
+router.post('/create', member_instructorsController.create)
+router.get('/', member_instructorsController.getMemberInstructor)
+
+module.exports = router
+```
+
+Include it in our server.js
+```js
+const memberinstructorsRouter = require('./routes/members_instructors')
+app.use('/memberinstructors', memberinstructorsRouter);
+```
+We have this member  
+![img](./memberid2.png)   
+
+And the member has instructor with id 2  
+![img](./instructorid2.png)
+
+Now we can create a member instructor  
+![img](./memberinstructor.png)
