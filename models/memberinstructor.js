@@ -1,4 +1,7 @@
 'use strict';
+const models = require('../models')
+const Member = models.Member
+const Instructor = models.Instructor
 const {
   Model
 } = require('sequelize');
@@ -14,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   MemberInstructor.init({
-    idMember: DataTypes.INTEGER,
-    idInstructor: DataTypes.INTEGER
+    idMember: {type: DataTypes.INTEGER, references: {model: Member, key:'id'}},
+    idInstructor: {type: DataTypes.INTEGER, references: {model: Instructor, key:'id'}}
   }, {
     sequelize,
     modelName: 'MemberInstructor',
