@@ -3,6 +3,7 @@ var router = express.Router();
 
 const instructorController = require('../controllers/instructor')
 router.post('/create', instructorController.create);
+router.get('/', instructorController.read);
 router.put('/update/:id', instructorController.update);
 
 module.exports = router

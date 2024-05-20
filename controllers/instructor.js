@@ -7,6 +7,11 @@ const create = async(req, res) => {
     res.json(instructor)
 }
 
+const read = async(req, res) => {
+    const instructors = await Instructor.findAll()
+    res.json(instructors)
+}
+
 const update = async(req, res) => {
     const id = req.params.id
     const data = req.body
@@ -17,5 +22,6 @@ const update = async(req, res) => {
 
 module.exports = {
     create,
+    read,
     update
 }
