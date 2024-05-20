@@ -7,6 +7,18 @@ const create = async(req, res) => {
     res.json(instructor)
 }
 
+const checkCredentials = async(req, res) => {
+    const data = req.body;
+    const instructor = await Instructor.findOne({where: {username: data.username}})
+    if(!instructor){
+        res.status(404).json({message: 'Instructor not found'})
+    } else if(!instructor.validPassword(data.password)){
+        res.status(401).json({message: 'Invalid password'})
+    } else {
+        res.json({instructor})
+    }
+}
+
 const read = async(req, res) => {
     const instructors = await Instructor.findAll()
     res.json(instructors)
@@ -22,7 +34,7 @@ const update = async(req, res) => {
 
 const deleteInstructor = async(req, res) => {
     await Instructor.destroy({where: {id: req.params.id}})
-    res.json({message: 'Member deleted successfully.'})
+    res.json({message: 'Instructor deleted successfully.'})
 
 }
 
@@ -30,5 +42,6 @@ module.exports = {
     create,
     read,
     update,
-    deleteInstructor
+    deleteInstructor,
+    checkCredentials
 }

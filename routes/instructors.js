@@ -6,5 +6,6 @@ router.post('/create', instructorController.create);
 router.get('/', instructorController.read);
 router.put('/update/:id', instructorController.update);
 router.delete('/delete/:id', instructorController.deleteInstructor)
+router.post('/checkCredentials', instructorController.checkCredentials)
 
 module.exports = router
