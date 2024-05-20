@@ -20,8 +20,15 @@ const update = async(req, res) => {
     res.json(instructor)
 }
 
+const deleteInstructor = async(req, res) => {
+    await Instructor.destroy({where: {id: req.params.id}})
+    res.json({message: 'Member deleted successfully.'})
+
+}
+
 module.exports = {
     create,
     read,
-    update
+    update,
+    deleteInstructor
 }
