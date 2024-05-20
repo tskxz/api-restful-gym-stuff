@@ -7,6 +7,15 @@ const create = async(req, res) => {
     res.json(instructor)
 }
 
+const update = async(req, res) => {
+    const id = req.params.id
+    const data = req.body
+    await Instructor.update(data, {where: {id: id}, individualHooks: true});
+    const instructor = await Instructor.findOne({where: {id: req.params.id}})
+    res.json(instructor)
+}
+
 module.exports = {
-    create
+    create,
+    update
 }
